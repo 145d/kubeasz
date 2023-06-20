@@ -2,7 +2,7 @@
 
 ### HA architecture
 
-![ha-2x](../../pics/ha-2x.gif)
+<img alt="ha-3x" width="500" height="380" src="../../pics/ha-3x.svg">
 
 - 注意1：确保各节点时区设置一致、时间同步。 如果你的环境没有提供NTP 时间同步，推荐集成安装[chrony](../guide/chrony.md)
 - 注意2：确保在干净的系统上开始安装，不要使用曾经装过kubeadm或其他k8s发行版的环境
@@ -50,19 +50,16 @@
 ``` bash
 #$IP为所有节点地址包括自身，按照提示输入yes 和root密码
 ssh-copy-id $IP 
-
-# 为每个节点设置python软链接
-ssh $IP ln -s /usr/bin/python3 /usr/bin/python
 ```
 
 ### 4.在部署节点编排k8s安装
 
 - 4.1 下载项目源码、二进制及离线镜像
 
-下载工具脚本ezdown，举例使用kubeasz版本3.3.1
+下载工具脚本ezdown，举例使用kubeasz版本3.5.0
 
 ``` bash
-export release=3.3.1
+export release=3.5.0
 wget https://github.com/easzlab/kubeasz/releases/download/${release}/ezdown
 chmod +x ./ezdown
 ```
@@ -79,7 +76,10 @@ chmod +x ./ezdown
 【可选】下载额外容器镜像（cilium,flannel,prometheus等）
 
 ``` bash
-./ezdown -X
+# 按需下载
+./ezdown -X flannel
+./ezdown -X prometheus
+...
 ```
 
 【可选】下载离线系统包 (适用于无法使用yum/apt仓库情形)
@@ -110,9 +110,8 @@ docker exec -it kubeasz ezctl new k8s-01
 如果你对集群安装流程不熟悉，请阅读项目首页 **安装步骤** 讲解后分步安装，并对 **每步都进行验证**  
 
 ``` bash
-#建议配置命令alias，方便执行
-echo "alias dk='docker exec -it kubeasz'" >> /root/.bashrc
-source /root/.bashrc
+#建议使用alias命令，查看~/.bashrc 文件应该包含：alias dk='docker exec -it kubeasz'
+source ~/.bashrc
 
 # 一键安装，等价于执行docker exec -it kubeasz ezctl setup k8s-01 all
 dk ezctl setup k8s-01 all

@@ -12,10 +12,10 @@
 
 ### 2.下载文件
 
-- 下载工具脚本ezdown，举例使用kubeasz版本3.3.1
+- 下载工具脚本ezdown，举例使用kubeasz版本3.5.0
 
 ``` bash
-export release=3.3.1
+export release=3.5.0
 wget https://github.com/easzlab/kubeasz/releases/download/${release}/ezdown
 chmod +x ./ezdown
 ```
@@ -34,7 +34,10 @@ chmod +x ./ezdown
 【可选】下载额外容器镜像（cilium,flannel,prometheus等）
 
 ``` bash
-./ezdown -X
+# 按需下载
+./ezdown -X flannel
+./ezdown -X prometheus
+...
 ```
 
 【可选】下载离线系统包 (适用于无法使用yum/apt仓库情形)
@@ -68,9 +71,8 @@ docker exec -it kubeasz ezctl start-aio
 
 ### 4.验证安装
 
-如果提示kubectl: command not found，退出重新ssh登录一下，环境变量生效即可
-
 ``` bash
+$ source ~/.bashrc
 $ kubectl version         # 验证集群版本     
 $ kubectl get node        # 验证节点就绪 (Ready) 状态
 $ kubectl get pod -A      # 验证集群pod状态，默认已安装网络插件、coredns、metrics-server等
